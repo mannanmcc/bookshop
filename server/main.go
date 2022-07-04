@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	zap "go.uber.org/zap"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	kafkaApp "github.com/mannanmcc/bookshop/internal/kafkaapp"
+	zap "go.uber.org/zap"
+	"google.golang.org/grpc"
 
 	protoOrder "github.com/mannanmcc/proto/order/pb"
 )
@@ -23,7 +25,7 @@ func getServer() *Server {
 func (s *Server) PlaceOrder(ctx context.Context, order *protoOrder.OrderRequest) (*protoOrder.OrderResponse, error) {
 	orderLogging, _ := zap.NewProduction()
 	orderLogging.Info("new order has been placed")
-
+	kafkaApp.Publish()
 	return &protoOrder.OrderResponse{
 		OrderNumber: "12345",
 	}, nil
